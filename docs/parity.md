@@ -40,7 +40,7 @@ Legend: ✅ done · 🚧 partial · ⬜ not started
 | `--order-by` / `--reverse` | ⬜ | hardcoded `ORDER BY updated DESC` |
 | `--history` | ⬜ | requires local history store |
 | `--custom` field filter | ✅ | via field registry; `jira fields sync` required |
-| `-q`/`--jql` raw JQL passthrough | ⬜ | |
+| `-q`/`--jql` raw JQL passthrough | ✅ | overrides all filter flags |
 | `--limit` | ✅ | |
 | `--plain` / `--raw` / `--csv` / `--no-headers` | ✅ | |
 | Interactive TUI | ⬜ | |
