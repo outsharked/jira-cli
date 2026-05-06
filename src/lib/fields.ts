@@ -146,15 +146,14 @@ export function isStale(registry: ProjectRegistry, ttlDays = 7): boolean {
 	return Date.now() - t > ttlDays * 24 * 60 * 60 * 1000;
 }
 
-// Returns the registry, syncing only if missing.
-// Stale detection is left to the caller so they can emit UX-appropriate messages.
 export async function getOrSyncRegistry(
 	project: string,
 	client: Version3Client,
 	onAutoSync?: () => void,
+	ttlDays = 7,
 ): Promise<ProjectRegistry> {
 	const existing = loadFieldRegistry(project);
-	if (existing) return existing;
+	if (existing && !isStale(existing, ttlDays)) return existing;
 	onAutoSync?.();
 	return syncFieldRegistry(project, client);
 }

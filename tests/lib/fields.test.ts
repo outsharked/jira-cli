@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	fieldsFilePath,
 	getIssueTypes,
+	getOrSyncRegistry,
 	isStale,
 	loadFieldRegistry,
 	normaliseKey,
@@ -166,5 +167,70 @@ describe("loadFieldRegistry / saveFieldRegistry", () => {
 		});
 		expect(loadFieldRegistry("KAN")).not.toBeNull();
 		expect(loadFieldRegistry("ENG")).not.toBeNull();
+	});
+});
+
+describe("getOrSyncRegistry", () => {
+	let tmpDir: string;
+
+	beforeEach(() => {
+		tmpDir = mkdtempSync(join(tmpdir(), "jira-cli-test-"));
+		vi.stubEnv("JIRA_FIELDS_FILE", join(tmpDir, "fields.json"));
+	});
+
+	afterEach(() => {
+		rmSync(tmpDir, { recursive: true });
+		vi.unstubAllEnvs();
+	});
+
+	function makeSyncClient() {
+		return {
+			issueFields: { getFields: vi.fn().mockResolvedValue([]) },
+			issueCustomFieldContexts: {
+				getContextsForField: vi.fn().mockResolvedValue({ values: [] }),
+			},
+			issueCustomFieldOptions: {
+				getOptionsForContext: vi.fn().mockResolvedValue({ values: [] }),
+			},
+			projects: {
+				getProject: vi.fn().mockResolvedValue({ id: "10000", key: "KAN" }),
+			},
+			issueTypes: {
+				getIssueTypesForProject: vi.fn().mockResolvedValue([]),
+			},
+		};
+	}
+
+	it("returns cached registry when fresh without calling the API", async () => {
+		saveFieldRegistry("KAN", { ...sampleRegistry, syncedAt: new Date().toISOString() });
+		const client = makeSyncClient();
+		await getOrSyncRegistry("KAN", client as any);
+		expect(client.issueFields.getFields).not.toHaveBeenCalled();
+	});
+
+	it("syncs when registry is missing and calls onAutoSync callback", async () => {
+		const client = makeSyncClient();
+		const onSync = vi.fn();
+		await getOrSyncRegistry("KAN", client as any, onSync);
+		expect(onSync).toHaveBeenCalled();
+		expect(client.issueFields.getFields).toHaveBeenCalled();
+	});
+
+	it("syncs when registry is stale and calls onAutoSync callback", async () => {
+		const staleDate = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString();
+		saveFieldRegistry("KAN", { ...sampleRegistry, syncedAt: staleDate });
+		const client = makeSyncClient();
+		const onSync = vi.fn();
+		await getOrSyncRegistry("KAN", client as any, onSync);
+		expect(onSync).toHaveBeenCalled();
+		expect(client.issueFields.getFields).toHaveBeenCalled();
+	});
+
+	it("respects a custom ttlDays — does not sync when within TTL", async () => {
+		const recentDate = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString();
+		saveFieldRegistry("KAN", { ...sampleRegistry, syncedAt: recentDate });
+		const client = makeSyncClient();
+		await getOrSyncRegistry("KAN", client as any, undefined, 3);
+		expect(client.issueFields.getFields).not.toHaveBeenCalled();
 	});
 });
