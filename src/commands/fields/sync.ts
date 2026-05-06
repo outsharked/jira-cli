@@ -30,6 +30,8 @@ export default class FieldsSync extends Command {
 		this.log(`Syncing fields for ${project}...`);
 		const client = createClient();
 		const registry = await syncFieldRegistry(project, client);
-		this.log(`${registry.fields.length} fields cached for ${project}.`);
+		this.log(
+			`${registry.fields.length} fields and ${registry.issueTypes?.length ?? 0} issue types cached for ${project}.`,
+		);
 	}
 }

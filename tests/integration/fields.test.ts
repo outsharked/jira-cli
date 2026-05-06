@@ -45,4 +45,15 @@ describe.skipIf(!hasCredentials)("fields sync (integration)", () => {
 			expect(f.schema.type).toBeTruthy();
 		}
 	});
+
+	it("populates issueTypes with id, name, subtask fields", () => {
+		const registry = loadFieldRegistry("KAN")!;
+		expect(registry.issueTypes).toBeDefined();
+		expect(registry.issueTypes!.length).toBeGreaterThan(0);
+		for (const t of registry.issueTypes!) {
+			expect(t.id).toBeTruthy();
+			expect(t.name).toBeTruthy();
+			expect(typeof t.subtask).toBe("boolean");
+		}
+	});
 });

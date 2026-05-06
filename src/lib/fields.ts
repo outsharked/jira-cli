@@ -132,9 +132,28 @@ export async function syncFieldRegistry(
 		});
 	}
 
+	let issueTypes: IssueTypeEntry[] = [];
+	try {
+		const projectData = await client.projects.getProject({
+			projectIdOrKey: project,
+		});
+		const types = await client.issueTypes.getIssueTypesForProject({
+			projectId: projectData.id,
+		});
+		issueTypes = (types ?? [])
+			.filter(
+				(t): t is { id: string; name: string; subtask: boolean } =>
+					typeof t.id === "string" && typeof t.name === "string",
+			)
+			.map((t) => ({ id: t.id, name: t.name, subtask: t.subtask ?? false }));
+	} catch {
+		// issue types are best-effort; leave empty on error
+	}
+
 	const registry: ProjectRegistry = {
 		syncedAt: new Date().toISOString(),
 		fields,
+		issueTypes,
 	};
 	saveFieldRegistry(project, registry);
 	return registry;
