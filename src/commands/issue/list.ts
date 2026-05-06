@@ -2,12 +2,7 @@ import { Command, Flags } from "@oclif/core";
 import Table from "cli-table3";
 import { createClient } from "../../lib/client.js";
 import { loadConfig } from "../../lib/config.js";
-import {
-	getOrSyncRegistry,
-	isStale,
-	loadFieldRegistry,
-	resolveField,
-} from "../../lib/fields.js";
+import { getOrSyncRegistry, resolveField } from "../../lib/fields.js";
 import { buildJql } from "../../lib/jql.js";
 
 export default class IssueList extends Command {
@@ -76,17 +71,13 @@ export default class IssueList extends Command {
 			jql = flags.jql;
 		} else {
 			// Resolve --custom flags to JQL clauses.
-			// Auto-sync if registry missing; warn (but proceed) if stale.
 			const customFields: Array<{ fieldName: string; value: string }> = [];
 			if (flags.custom?.length) {
-				const existing = loadFieldRegistry(project ?? "");
-				if (existing && isStale(existing)) {
-					this.warn(
-						`Field registry for ${project} is stale. Run \`jira fields sync\` to refresh.`,
-					);
-				}
-				const registry = await getOrSyncRegistry(project ?? "", client, () =>
-					this.log(`Fetching field registry for ${project}...`),
+				const registry = await getOrSyncRegistry(
+					project ?? "",
+					client,
+					() => this.log(`Fetching field registry for ${project}...`),
+					cfg.fieldsCacheTtlDays,
 				);
 				for (const raw of flags.custom) {
 					const eqIdx = raw.indexOf("=");
