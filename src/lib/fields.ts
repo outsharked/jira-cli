@@ -140,12 +140,10 @@ export async function syncFieldRegistry(
 	return registry;
 }
 
-const STALE_MS = 7 * 24 * 60 * 60 * 1000;
-
-export function isStale(registry: ProjectRegistry): boolean {
+export function isStale(registry: ProjectRegistry, ttlDays = 7): boolean {
 	const t = new Date(registry.syncedAt).getTime();
 	if (Number.isNaN(t)) return true;
-	return Date.now() - t > STALE_MS;
+	return Date.now() - t > ttlDays * 24 * 60 * 60 * 1000;
 }
 
 // Returns the registry, syncing only if missing.

@@ -117,6 +117,11 @@ describe("isStale", () => {
 	it("returns true for a registry with a corrupt syncedAt", () => {
 		expect(isStale({ ...sampleRegistry, syncedAt: "not-a-date" })).toBe(true);
 	});
+	it("respects a custom ttlDays parameter", () => {
+		const recent = new Date(Date.now() - 25 * 60 * 60 * 1000).toISOString();
+		expect(isStale({ ...sampleRegistry, syncedAt: recent }, 1)).toBe(true);
+		expect(isStale({ ...sampleRegistry, syncedAt: recent }, 2)).toBe(false);
+	});
 });
 
 describe("loadFieldRegistry / saveFieldRegistry", () => {
