@@ -50,7 +50,7 @@ Legend: ✅ done · 🚧 partial · ⬜ not started
 | Command | Status |
 |---------|--------|
 | `issue view KEY` | ✅ |
-| `issue create` | ⬜ |
+| `issue create` | ✅ |
 | `issue edit KEY` | ⬜ |
 | `issue assign KEY` | ✅ |
 | `issue move KEY` (transition) | ✅ |

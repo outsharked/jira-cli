@@ -58,6 +58,7 @@ src/
     me.ts
     issue/list.ts
     issue/view.ts
+    issue/create.ts
     issue/assign.ts
     issue/move.ts
     issue/comment/add.ts
