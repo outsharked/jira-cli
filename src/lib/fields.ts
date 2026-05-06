@@ -11,9 +11,16 @@ export type FieldEntry = {
 	allowedValues: string[] | null;
 };
 
+export type IssueTypeEntry = {
+	id: string;
+	name: string;
+	subtask: boolean;
+};
+
 export type ProjectRegistry = {
 	syncedAt: string;
 	fields: FieldEntry[];
+	issueTypes?: IssueTypeEntry[];
 };
 
 type FieldsFile = Record<string, ProjectRegistry>;
@@ -74,6 +81,10 @@ export function resolveField(
 	// 3. case-insensitive name
 	const lower = input.toLowerCase();
 	return registry.fields.find((f) => f.name.toLowerCase() === lower);
+}
+
+export function getIssueTypes(registry: ProjectRegistry): IssueTypeEntry[] {
+	return registry.issueTypes ?? [];
 }
 
 export async function syncFieldRegistry(

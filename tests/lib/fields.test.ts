@@ -4,10 +4,12 @@ import { dirname, join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	fieldsFilePath,
+	getIssueTypes,
 	isStale,
 	loadFieldRegistry,
 	normaliseKey,
 	type ProjectRegistry,
+	type IssueTypeEntry,
 	resolveField,
 	saveFieldRegistry,
 } from "../../src/lib/fields.js";
@@ -57,6 +59,11 @@ const sampleRegistry: ProjectRegistry = {
 			allowedValues: ["Production", "Staging"],
 		},
 	],
+	issueTypes: [
+		{ id: "10001", name: "Story", subtask: false },
+		{ id: "10002", name: "Bug", subtask: false },
+		{ id: "10003", name: "Sub-task", subtask: true },
+	],
 };
 
 describe("resolveField", () => {
@@ -78,6 +85,18 @@ describe("resolveField", () => {
 	});
 	it("returns undefined for unknown input", () => {
 		expect(resolveField(sampleRegistry, "nonexistent")).toBeUndefined();
+	});
+});
+
+describe("getIssueTypes", () => {
+	it("returns the issueTypes array when present", () => {
+		const types = getIssueTypes(sampleRegistry);
+		expect(types).toHaveLength(3);
+		expect(types[0].name).toBe("Story");
+	});
+	it("returns an empty array when issueTypes is absent", () => {
+		const reg: ProjectRegistry = { syncedAt: new Date().toISOString(), fields: [] };
+		expect(getIssueTypes(reg)).toEqual([]);
 	});
 });
 
