@@ -9,7 +9,7 @@ export function isInteractive(noInput: boolean): boolean {
 	);
 }
 
-export async function openEditor(template = ""): Promise<string> {
+export async function openEditor(template = "", allowEmpty = false): Promise<string> {
 	const editor = process.env.EDITOR ?? process.env.VISUAL ?? "vi";
 	const dir = mkdtempSync(join(tmpdir(), "jira-cli-"));
 	const file = join(dir, "message.txt");
@@ -23,7 +23,7 @@ export async function openEditor(template = ""): Promise<string> {
 			throw new Error("Aborted: editor exited with non-zero status");
 		}
 		const content = readFileSync(file, "utf8").trim();
-		if (!content) throw new Error("Aborted: empty input");
+		if (!content && !allowEmpty) throw new Error("Aborted: empty input");
 		return content;
 	} finally {
 		rmSync(dir, { recursive: true });

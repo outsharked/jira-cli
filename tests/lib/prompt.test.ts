@@ -1,5 +1,8 @@
-import { afterEach, describe, expect, it } from "vitest";
-import { isInteractive } from "../../src/lib/prompt.js";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { isInteractive, openEditor } from "../../src/lib/prompt.js";
 
 describe("isInteractive", () => {
 	const origStdin = process.stdin.isTTY;
@@ -46,5 +49,20 @@ describe("isInteractive", () => {
 	it("returns false when stdout is not a TTY", () => {
 		setTTY(true, false);
 		expect(isInteractive(false)).toBe(false);
+	});
+});
+
+describe("openEditor allowEmpty", () => {
+	it("throws on empty content by default", async () => {
+		vi.stubEnv("EDITOR", "true"); // 'true' command exits 0 without writing
+		await expect(openEditor()).rejects.toThrow(/empty input/);
+		vi.unstubAllEnvs();
+	});
+
+	it("returns empty string when allowEmpty is true and editor writes nothing", async () => {
+		vi.stubEnv("EDITOR", "true");
+		const result = await openEditor("", true);
+		expect(result).toBe("");
+		vi.unstubAllEnvs();
 	});
 });
