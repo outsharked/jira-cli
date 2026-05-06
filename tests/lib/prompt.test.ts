@@ -9,10 +9,12 @@ describe("isInteractive", () => {
 		Object.defineProperty(process.stdin, "isTTY", {
 			value: origStdin,
 			configurable: true,
+			writable: true,
 		});
 		Object.defineProperty(process.stdout, "isTTY", {
 			value: origStdout,
 			configurable: true,
+			writable: true,
 		});
 	});
 
@@ -20,10 +22,12 @@ describe("isInteractive", () => {
 		Object.defineProperty(process.stdin, "isTTY", {
 			value: stdin,
 			configurable: true,
+			writable: true,
 		});
 		Object.defineProperty(process.stdout, "isTTY", {
 			value: stdout,
 			configurable: true,
+			writable: true,
 		});
 	}
 

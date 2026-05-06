@@ -16,6 +16,9 @@ export async function openEditor(template = ""): Promise<string> {
 	try {
 		writeFileSync(file, template);
 		const result = spawnSync(editor, [file], { stdio: "inherit" });
+		if (result.error) {
+			throw result.error;
+		}
 		if (result.status !== 0) {
 			throw new Error("Aborted: editor exited with non-zero status");
 		}

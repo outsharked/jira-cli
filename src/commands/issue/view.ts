@@ -82,7 +82,9 @@ export default class IssueView extends Command {
 				const author = c.author?.displayName ?? "?";
 				const when = c.created ? new Date(c.created).toLocaleString() : "";
 				this.log(`  ${chalk.dim(`${author} · ${when}`)}`);
-				this.log(`  ${renderAdf(c.body)}`);
+				if (c.body) {
+					this.log(`  ${renderAdf(c.body)}`);
+				}
 				this.log("");
 			}
 		}
