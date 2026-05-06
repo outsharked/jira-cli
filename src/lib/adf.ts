@@ -15,7 +15,7 @@ export function renderAdf(doc: unknown): string {
 	return "";
 }
 
-export function textToAdf(text: string): object {
+export function textToAdf(text: string): Record<string, unknown> {
 	return {
 		type: "doc",
 		version: 1,

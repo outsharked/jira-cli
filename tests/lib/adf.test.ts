@@ -51,7 +51,7 @@ describe("renderAdf", () => {
 
 describe("textToAdf", () => {
 	it("produces a doc > paragraph > text structure", () => {
-		const doc = textToAdf("hello world") as any;
+		const doc = textToAdf("hello world");
 		expect(doc.type).toBe("doc");
 		expect(doc.version).toBe(1);
 		expect(doc.content[0].type).toBe("paragraph");
@@ -60,6 +60,6 @@ describe("textToAdf", () => {
 	});
 	it("preserves the text content exactly", () => {
 		const text = "multi\nline";
-		expect((textToAdf(text) as any).content[0].content[0].text).toBe(text);
+		expect(textToAdf(text).content[0].content[0].text).toBe(text);
 	});
 });
