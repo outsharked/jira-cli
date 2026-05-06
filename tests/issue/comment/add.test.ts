@@ -1,6 +1,6 @@
 import { Config } from "@oclif/core";
 import { join } from "node:path";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import IssueCommentAdd from "../../../src/commands/issue/comment/add.js";
 import { createClient } from "../../../src/lib/client.js";
 import * as promptModule from "../../../src/lib/prompt.js";
@@ -21,6 +21,10 @@ beforeAll(async () => {
 	oclifConfig = await Config.load({
 		root: join(import.meta.dirname, "../../.."),
 	});
+});
+
+afterEach(() => {
+	vi.restoreAllMocks();
 });
 
 async function runCommentAdd(
@@ -65,6 +69,5 @@ describe("issue comment add", () => {
 			issueIdOrKey: "KAN-1",
 			comment: textToAdf("editor content"),
 		});
-		vi.restoreAllMocks();
 	});
 });

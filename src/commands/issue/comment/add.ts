@@ -32,8 +32,11 @@ export default class IssueCommentAdd extends Command {
 			if (!isInteractive(flags["no-input"] ?? false)) {
 				this.error("--body is required in non-interactive mode");
 			}
-			body = await openEditor();
-			if (!body) this.error("Aborted: empty comment.");
+			try {
+				body = await openEditor();
+			} catch (err) {
+				this.error(err instanceof Error ? err.message : String(err));
+			}
 		}
 
 		const client = createClient();
