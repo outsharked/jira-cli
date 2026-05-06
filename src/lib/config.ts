@@ -6,6 +6,7 @@ export type JiraConfig = {
 	apiToken: string;
 	defaultProject?: string;
 	defaultBoard?: number;
+	fieldsCacheTtlDays?: number;
 };
 
 const store = new Conf<Partial<JiraConfig>>({
@@ -17,11 +18,12 @@ const store = new Conf<Partial<JiraConfig>>({
 		apiToken: { type: "string" },
 		defaultProject: { type: "string" },
 		defaultBoard: { type: "number" },
+		fieldsCacheTtlDays: { type: "number" },
 	},
 });
 
 // Environment variables take precedence over the file store.
-// Supported: JIRA_HOST, JIRA_EMAIL, JIRA_API_TOKEN, JIRA_DEFAULT_PROJECT
+// Supported: JIRA_HOST, JIRA_EMAIL, JIRA_API_TOKEN, JIRA_DEFAULT_PROJECT, JIRA_FIELDS_TTL_DAYS
 export function loadConfig(): JiraConfig {
 	const host = process.env.JIRA_HOST ?? store.get("host");
 	const email = process.env.JIRA_EMAIL ?? store.get("email");
@@ -29,6 +31,8 @@ export function loadConfig(): JiraConfig {
 	if (!host || !email || !apiToken) {
 		throw new Error("Not configured. Run `jira init` to set up credentials.");
 	}
+	const ttlEnv = process.env.JIRA_FIELDS_TTL_DAYS;
+	const ttlParsed = ttlEnv ? Number.parseInt(ttlEnv, 10) : undefined;
 	return {
 		host,
 		email,
@@ -36,6 +40,10 @@ export function loadConfig(): JiraConfig {
 		defaultProject:
 			process.env.JIRA_DEFAULT_PROJECT ?? store.get("defaultProject"),
 		defaultBoard: store.get("defaultBoard"),
+		fieldsCacheTtlDays:
+			ttlParsed !== undefined && !Number.isNaN(ttlParsed)
+				? ttlParsed
+				: store.get("fieldsCacheTtlDays"),
 	};
 }
 
