@@ -7,7 +7,7 @@ export default class IssueAssign extends Command {
 	static override description = "Assign an issue to a user";
 	static override examples = [
 		"<%= config.bin %> issue assign KAN-1 --assignee me",
-		"<%= config.bin %> issue assign KAN-1 --assignee user@example.com",
+		"<%= config.bin %> issue assign KAN-1 --assignee 5b10ac8d82e05b22cc7d4ef5",
 		"<%= config.bin %> issue assign KAN-1 --assignee none",
 	];
 
@@ -18,7 +18,7 @@ export default class IssueAssign extends Command {
 	static override flags = {
 		assignee: Flags.string({
 			char: "a",
-			description: 'accountId, email, "me", or "none" (unassign)',
+			description: 'accountId, "me", or "none" (unassign)',
 		}),
 		"no-input": Flags.boolean({
 			description: "Disable interactive prompts; error if inputs missing",
@@ -35,7 +35,7 @@ export default class IssueAssign extends Command {
 				this.error("--assignee is required in non-interactive mode");
 			}
 			assigneeInput = await input({
-				message: "Assignee (email, accountId, me, none):",
+				message: "Assignee (accountId, me, none):",
 			});
 		}
 
