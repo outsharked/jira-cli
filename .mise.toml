@@ -1,0 +1,30 @@
+[tools]
+pnpm = "10.32.1"
+
+[tasks.dev]
+run = "node ./bin/dev.js $@"
+description = "Run the CLI via tsx (no compile step)"
+
+[tasks.build]
+run = "pnpm build"
+description = "Compile TypeScript to dist/"
+
+[tasks.test]
+run = "pnpm test"
+description = "Run unit tests"
+
+[tasks."test:integration"]
+run = "pnpm test:integration"
+description = "Run integration tests against real Jira (requires JIRA_* env vars)"
+
+[tasks."test:watch"]
+run = "pnpm test:watch"
+description = "Run vitest in watch mode"
+
+[tasks.lint]
+run = "pnpm lint"
+description = "Check formatting and lint rules (biome)"
+
+[tasks."lint:fix"]
+run = "pnpm lint:fix"
+description = "Auto-fix formatting and lint issues (biome)"

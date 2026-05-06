@@ -1,0 +1,6 @@
+node_modules/
+dist/
+*.tsbuildinfo
+oclif.manifest.json
+.env
+.env.local

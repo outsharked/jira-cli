@@ -1,0 +1,59 @@
+{
+  "name": "jira-cli",
+  "version": "0.0.1",
+  "description": "Node.js port of ankitpokhrel/jira-cli (Jira Cloud CLI)",
+  "bin": {
+    "jira": "./bin/run.js"
+  },
+  "type": "module",
+  "files": [
+    "/bin",
+    "/dist",
+    "/oclif.manifest.json"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "prepack": "pnpm build && oclif manifest",
+    "postpack": "rm -f oclif.manifest.json",
+    "start": "node ./bin/dev.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "dev": "node ./bin/dev.js",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --write src/",
+    "format": "biome format --write src/"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.2.1",
+    "@oclif/core": "^4.0.0",
+    "adf-to-md": "^1.1.1",
+    "chalk": "^5.3.0",
+    "cli-table3": "^0.6.5",
+    "conf": "^13.0.0",
+    "jira.js": "^5.0.0",
+    "marklassian": "^1.2.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.14",
+    "@types/node": "^22.0.0",
+    "oclif": "^4.0.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.5.0",
+    "vitest": "^4.1.5"
+  },
+  "oclif": {
+    "bin": "jira",
+    "dirname": "jira",
+    "commands": "./dist/commands",
+    "topicSeparator": " ",
+    "topics": {
+      "issue": {
+        "description": "manage issues"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

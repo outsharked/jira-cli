@@ -1,0 +1,62 @@
+{
+  "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+  "id": "10011",
+  "self": "https://example.atlassian.net/rest/api/3/issue/10011",
+  "key": "KAN-2",
+  "fields": {
+    "summary": "Task 2",
+    "issuetype": {
+      "self": "https://example.atlassian.net/rest/api/3/issuetype/10008",
+      "id": "10008",
+      "description": "Stories track functionality or features expressed as user goals.",
+      "iconUrl": "https://example.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10315?size=medium",
+      "name": "Story",
+      "subtask": false,
+      "avatarId": 10315,
+      "entityId": "e37a63ed-49c8-43ed-8f48-631b2e50e7ba",
+      "hierarchyLevel": 0
+    },
+    "created": "2026-05-05T12:59:17.566-0400",
+    "description": null,
+    "comment": {
+      "comments": [],
+      "self": "https://example.atlassian.net/rest/api/3/issue/10011/comment",
+      "maxResults": 0,
+      "total": 0,
+      "startAt": 0
+    },
+    "reporter": {
+      "self": "https://example.atlassian.net/rest/api/3/user?accountId=712020%3Aa41318ea-1af7-4bf6-b535-5064cc14e317",
+      "accountId": "712020:a41318ea-1af7-4bf6-b535-5064cc14e317",
+      "emailAddress": "user@example.com",
+      "avatarUrls": {
+        "48x48": "https://secure.gravatar.com/avatar/0d100cc4ad5735c76c7be62e9bb76929?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FA-2.png",
+        "24x24": "https://secure.gravatar.com/avatar/0d100cc4ad5735c76c7be62e9bb76929?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FA-2.png",
+        "16x16": "https://secure.gravatar.com/avatar/0d100cc4ad5735c76c7be62e9bb76929?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FA-2.png",
+        "32x32": "https://secure.gravatar.com/avatar/0d100cc4ad5735c76c7be62e9bb76929?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FA-2.png"
+      },
+      "displayName": "Alf",
+      "active": true,
+      "timeZone": "America/New_York",
+      "accountType": "atlassian"
+    },
+    "assignee": null,
+    "priority": null,
+    "updated": "2026-05-05T12:59:18.140-0400",
+    "status": {
+      "self": "https://example.atlassian.net/rest/api/3/status/10005",
+      "description": "This work item is being actively worked on at the moment by the assignee.",
+      "iconUrl": "https://example.atlassian.net/images/icons/statuses/generic.png",
+      "name": "In Progress",
+      "id": "10005",
+      "statusCategory": {
+        "self": "https://example.atlassian.net/rest/api/3/statuscategory/4",
+        "id": 4,
+        "key": "indeterminate",
+        "colorName": "yellow",
+        "name": "In Progress"
+      }
+    },
+    "labels": []
+  }
+}
