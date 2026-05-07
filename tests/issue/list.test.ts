@@ -88,3 +88,34 @@ describe("issue list --custom", () => {
 		await expect(runList(["--custom", "nonexistent=8"])).rejects.toThrow(/Unknown field/);
 	});
 });
+
+describe("issue list --watching", () => {
+	it("generates issue IN watchedIssues() in JQL", async () => {
+		const { jql } = await runList(["--watching"]);
+		expect(jql).toContain("issue IN watchedIssues()");
+	});
+});
+
+describe("issue list --label (multi)", () => {
+	it("passes multiple labels to JQL builder", async () => {
+		const { jql } = await runList(["-l", "bug", "-l", "ui"]);
+		expect(jql).toContain('labels IN ("bug", "ui")');
+	});
+
+	it("passes a single label to JQL builder", async () => {
+		const { jql } = await runList(["-l", "urgent"]);
+		expect(jql).toContain('labels = "urgent"');
+	});
+});
+
+describe("issue list --reverse / --order-by", () => {
+	it("--reverse produces ORDER BY updated ASC", async () => {
+		const { jql } = await runList(["--reverse"]);
+		expect(jql).toMatch(/ORDER BY updated ASC$/);
+	});
+
+	it("--order-by created produces ORDER BY created DESC", async () => {
+		const { jql } = await runList(["--order-by", "created"]);
+		expect(jql).toMatch(/ORDER BY created DESC$/);
+	});
+});

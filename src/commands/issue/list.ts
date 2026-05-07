@@ -23,6 +23,10 @@ export default class IssueList extends Command {
 			char: "a",
 			description: 'Assignee (accountId, email, or "me")',
 		}),
+		reporter: Flags.string({
+			char: "r",
+			description: 'Reporter (accountId, email, or "me")',
+		}),
 		status: Flags.string({
 			char: "s",
 			description: "Status (todo / in-progress / done or a custom name)",
@@ -30,11 +34,35 @@ export default class IssueList extends Command {
 		sprint: Flags.string({ description: 'Sprint name or "active"' }),
 		type: Flags.string({ char: "t", description: "Issue type" }),
 		epic: Flags.string({ description: "Parent epic key" }),
-		label: Flags.string({ char: "l", description: "Label" }),
+		label: Flags.string({
+			char: "l",
+			description: "Label (repeatable; prefix with ~ to exclude)",
+			multiple: true,
+		}),
+		priority: Flags.string({
+			char: "y",
+			description: "Priority (e.g. High)",
+		}),
+		watching: Flags.boolean({
+			char: "w",
+			description: "Issues you are watching",
+		}),
 		"created-after": Flags.string({
 			description: "Created on/after (e.g. -7d)",
 		}),
+		"created-before": Flags.string({
+			description: "Created before (e.g. 2026-01-01)",
+		}),
 		"updated-after": Flags.string({ description: "Updated on/after" }),
+		"updated-before": Flags.string({
+			description: "Updated before (e.g. 2026-01-01)",
+		}),
+		"order-by": Flags.string({
+			description: 'Field to order by (default: "updated")',
+		}),
+		reverse: Flags.boolean({
+			description: "Reverse order (ASC instead of DESC)",
+		}),
 		unresolved: Flags.boolean({
 			description: "Only issues with no resolution",
 		}),
@@ -99,13 +127,20 @@ export default class IssueList extends Command {
 			jql = buildJql({
 				project,
 				assignee: flags.assignee,
+				reporter: flags.reporter,
 				status: flags.status,
 				sprint: flags.sprint,
 				issueType: flags.type,
 				epic: flags.epic,
-				label: flags.label,
+				labels: flags.label,
+				priority: flags.priority,
+				watching: flags.watching,
 				createdAfter: flags["created-after"],
+				createdBefore: flags["created-before"],
 				updatedAfter: flags["updated-after"],
+				updatedBefore: flags["updated-before"],
+				orderBy: flags["order-by"],
+				orderDirection: flags.reverse ? "ASC" : undefined,
 				unresolved: flags.unresolved,
 				resolved: flags.resolved,
 				customFields,
