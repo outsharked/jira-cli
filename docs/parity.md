@@ -27,17 +27,17 @@ Legend: ✅ done · 🚧 partial · ⬜ not started
 |------|--------|-------|
 | `-a` assignee / `me` / `-ax` unassigned | 🚧 | `me` and named assignee done; `-ax` unassigned not done |
 | `-s` status (with shorthand mapping) | ✅ | |
-| `-y` priority | ⬜ | |
+| `-y` priority | ✅ | |
 | `-t` type | ✅ | |
-| `-l` label (multi) | 🚧 | single label only |
-| `-r` reporter | ⬜ | |
+| `-l` label (multi) | ✅ | |
+| `-r` reporter | ✅ | | |
 | `-R` resolution | 🚧 | `--resolved`/`--unresolved` done; named resolution not done |
 | `--sprint` / active | ✅ | |
 | `--epic` parent epic | ✅ | |
-| `--created` / `--created-before` | 🚧 | `--created-after` done; `--created-before` not done |
-| `--updated` / `--updated-before` | 🚧 | `--updated-after` done; `--updated-before` not done |
-| `-w` watching | ⬜ | |
-| `--order-by` / `--reverse` | ⬜ | hardcoded `ORDER BY updated DESC` |
+| `--created` / `--created-before` | ✅ | |
+| `--updated` / `--updated-before` | ✅ | |
+| `-w` watching | ✅ | | |
+| `--order-by` / `--reverse` | ✅ | |
 | `--history` | ⬜ | requires local history store |
 | `--custom` field filter | ✅ | via field registry; `jira fields sync` required |
 | `-q`/`--jql` raw JQL passthrough | ✅ | overrides all filter flags |
