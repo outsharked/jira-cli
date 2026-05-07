@@ -9,7 +9,10 @@ export function isInteractive(noInput: boolean): boolean {
 	);
 }
 
-export async function openEditor(template = "", allowEmpty = false): Promise<string> {
+export async function openEditor(
+	template = "",
+	allowEmpty = false,
+): Promise<string> {
 	const editor = process.env.EDITOR ?? process.env.VISUAL ?? "vi";
 	const dir = mkdtempSync(join(tmpdir(), "jira-cli-"));
 	const file = join(dir, "message.txt");

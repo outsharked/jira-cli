@@ -1,5 +1,5 @@
-import { Config } from "@oclif/core";
 import { join } from "node:path";
+import { Config } from "@oclif/core";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import IssueList from "../../src/commands/issue/list.js";
 import { createClient } from "../../src/lib/client.js";
@@ -23,7 +23,9 @@ const sampleRegistry = {
 function makeMockClient() {
 	return {
 		issueSearch: {
-			searchForIssuesUsingJqlEnhancedSearchPost: vi.fn().mockResolvedValue({ issues: [] }),
+			searchForIssuesUsingJqlEnhancedSearchPost: vi
+				.fn()
+				.mockResolvedValue({ issues: [] }),
 		},
 	};
 }
@@ -33,7 +35,9 @@ beforeAll(async () => {
 	oclifConfig = await Config.load({ root: join(import.meta.dirname, "../..") });
 });
 
-async function runList(argv: string[]): Promise<{ lines: string[]; jql: string }> {
+async function runList(
+	argv: string[],
+): Promise<{ lines: string[]; jql: string }> {
 	const mock = makeMockClient();
 	vi.mocked(createClient).mockReturnValue(mock as any);
 	const lines: string[] = [];
@@ -46,7 +50,9 @@ async function runList(argv: string[]): Promise<{ lines: string[]; jql: string }
 	} finally {
 		console.log = origLog;
 	}
-	const call = mock.issueSearch.searchForIssuesUsingJqlEnhancedSearchPost.mock.calls[0]?.[0];
+	const call =
+		mock.issueSearch.searchForIssuesUsingJqlEnhancedSearchPost.mock
+			.calls[0]?.[0];
 	return { lines, jql: call?.jql ?? "" };
 }
 
@@ -66,7 +72,9 @@ describe("issue list --jql", () => {
 
 describe("issue list --custom", () => {
 	beforeEach(() => {
-		vi.spyOn(fieldsModule, "getOrSyncRegistry").mockResolvedValue(sampleRegistry as any);
+		vi.spyOn(fieldsModule, "getOrSyncRegistry").mockResolvedValue(
+			sampleRegistry as any,
+		);
 	});
 
 	it("resolves by key and appends JQL clause", async () => {
@@ -85,7 +93,9 @@ describe("issue list --custom", () => {
 	});
 
 	it("throws on unknown field name", async () => {
-		await expect(runList(["--custom", "nonexistent=8"])).rejects.toThrow(/Unknown field/);
+		await expect(runList(["--custom", "nonexistent=8"])).rejects.toThrow(
+			/Unknown field/,
+		);
 	});
 });
 
