@@ -68,10 +68,13 @@ export default class IssueEdit extends Command {
 
 		let summary = flags.summary;
 		if (!summary && interactive) {
-			summary = await input({
+			const currentSummary =
+				(issue.fields?.summary as string | undefined) ?? "";
+			const entered = await input({
 				message: "Summary:",
-				default: (issue.fields?.summary as string | undefined) ?? "",
+				default: currentSummary,
 			});
+			if (entered !== currentSummary) summary = entered;
 		}
 
 		let description = flags.description;
@@ -93,7 +96,7 @@ export default class IssueEdit extends Command {
 					this.error("Could not resolve your account ID from Jira");
 				}
 				assigneeField = { accountId: me.accountId };
-			} else if (flags.assignee === "x") {
+			} else if (flags.assignee.toLowerCase() === "x") {
 				assigneeField = { accountId: null };
 			} else {
 				assigneeField = { accountId: flags.assignee };
