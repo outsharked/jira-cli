@@ -11,13 +11,18 @@ export default class Init extends Command {
 		await this.parse(Init);
 		const host = await input({
 			message: "Jira site URL (e.g. https://yourcompany.atlassian.net):",
+			default: process.env.JIRA_HOST,
 			validate: (v) => /^https?:\/\//.test(v) || "Must start with http(s)://",
 		});
-		const email = await input({ message: "Account email:" });
+		const email = await input({
+			message: "Account email:",
+			default: process.env.JIRA_EMAIL,
+		});
 		const apiToken = await password({
 			message:
 				"API token (id.atlassian.com/manage-profile/security/api-tokens):",
 			mask: "*",
+			default: process.env.JIRA_API_TOKEN,
 		});
 
 		this.log("Verifying credentials...");
@@ -32,7 +37,7 @@ export default class Init extends Command {
 
 		const defaultProject = await input({
 			message: "Default project key (optional, e.g. ENG):",
-			default: "",
+			default: process.env.JIRA_DEFAULT_PROJECT ?? "",
 		});
 
 		saveConfig({
