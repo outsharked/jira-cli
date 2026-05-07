@@ -8,22 +8,31 @@
 export type JQLOptions = {
 	project?: string;
 	assignee?: string;
+	reporter?: string;
 	status?: string;
 	sprint?: string;
 	issueType?: string;
 	epic?: string;
-	label?: string;
+	labels?: string[];
+	priority?: string;
+	watching?: boolean;
 	createdAfter?: string;
+	createdBefore?: string;
 	updatedAfter?: string;
+	updatedBefore?: string;
 	unresolved?: boolean;
 	resolved?: boolean;
 	customFields?: Array<{ fieldName: string; value: string }>;
+	orderBy?: string;
+	orderDirection?: "ASC" | "DESC";
 };
 
-// BuildJQL constructs a JQL string from opts, appending ORDER BY updated DESC.
-// Returns "" if no fields are set.
 export function buildJql(opts: JQLOptions): string {
 	const clauses: string[] = [];
+
+	if (opts.watching) {
+		clauses.push("issue IN watchedIssues()");
+	}
 
 	if (opts.project) {
 		clauses.push(`project = ${quoteIdent(opts.project)}`);
@@ -34,6 +43,14 @@ export function buildJql(opts: JQLOptions): string {
 			clauses.push("assignee = currentUser()");
 		} else {
 			clauses.push(`assignee = ${quoteValue(opts.assignee)}`);
+		}
+	}
+
+	if (opts.reporter) {
+		if (opts.reporter.toLowerCase() === "me") {
+			clauses.push("reporter = currentUser()");
+		} else {
+			clauses.push(`reporter = ${quoteValue(opts.reporter)}`);
 		}
 	}
 
@@ -58,8 +75,25 @@ export function buildJql(opts: JQLOptions): string {
 		clauses.push(`"Epic Link" = ${quoteValue(opts.epic)}`);
 	}
 
-	if (opts.label) {
-		clauses.push(`labels = ${quoteValue(opts.label)}`);
+	if (opts.labels?.length) {
+		const positive = opts.labels.filter((l) => !l.startsWith("~"));
+		const negative = opts.labels
+			.filter((l) => l.startsWith("~"))
+			.map((l) => l.slice(1));
+		if (positive.length === 1 && negative.length === 0) {
+			clauses.push(`labels = ${quoteValue(positive[0])}`);
+		} else if (positive.length > 0) {
+			clauses.push(`labels IN (${positive.map(quoteValue).join(", ")})`);
+		}
+		if (negative.length === 1) {
+			clauses.push(`labels NOT IN (${quoteValue(negative[0])})`);
+		} else if (negative.length > 1) {
+			clauses.push(`labels NOT IN (${negative.map(quoteValue).join(", ")})`);
+		}
+	}
+
+	if (opts.priority) {
+		clauses.push(`priority = ${quoteValue(opts.priority)}`);
 	}
 
 	if (opts.unresolved) {
@@ -71,8 +105,14 @@ export function buildJql(opts: JQLOptions): string {
 	if (opts.createdAfter) {
 		clauses.push(`created >= ${quoteValue(opts.createdAfter)}`);
 	}
+	if (opts.createdBefore) {
+		clauses.push(`created < ${quoteValue(opts.createdBefore)}`);
+	}
 	if (opts.updatedAfter) {
 		clauses.push(`updated >= ${quoteValue(opts.updatedAfter)}`);
+	}
+	if (opts.updatedBefore) {
+		clauses.push(`updated < ${quoteValue(opts.updatedBefore)}`);
 	}
 
 	for (const cf of opts.customFields ?? []) {
@@ -80,11 +120,11 @@ export function buildJql(opts: JQLOptions): string {
 	}
 
 	if (clauses.length === 0) return "";
-	return `${clauses.join(" AND ")} ORDER BY updated DESC`;
+	const orderBy = opts.orderBy ?? "updated";
+	const dir = opts.orderDirection ?? "DESC";
+	return `${clauses.join(" AND ")} ORDER BY ${orderBy} ${dir}`;
 }
 
-// mapStatus converts common shorthand status names to canonical Jira display names.
-// Input is case-insensitive. Unknown values are returned verbatim.
 function mapStatus(s: string): string {
 	switch (s.toLowerCase().replace(/-/g, "")) {
 		case "todo":
@@ -98,16 +138,11 @@ function mapStatus(s: string): string {
 	}
 }
 
-// quoteValue wraps s in double-quotes and escapes any contained backslash or
-// double-quote. Use this for all user-supplied leaf values.
 function quoteValue(s: string): string {
 	const escaped = s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 	return `"${escaped}"`;
 }
 
-// quoteIdent returns s without quotes when it is a simple alphanumeric identifier
-// (letters, digits, hyphens, underscores, dots) — suitable for project keys.
-// Otherwise falls back to quoteValue.
 function quoteIdent(s: string): string {
 	if (/^[A-Za-z0-9._-]+$/.test(s)) return s;
 	return quoteValue(s);
