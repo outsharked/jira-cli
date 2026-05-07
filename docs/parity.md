@@ -51,7 +51,7 @@ Legend: ✅ done · 🚧 partial · ⬜ not started
 |---------|--------|
 | `issue view KEY` | ✅ |
 | `issue create` | ✅ |
-| `issue edit KEY` | ⬜ |
+| `issue edit KEY` | ✅ |
 | `issue assign KEY` | ✅ |
 | `issue move KEY` (transition) | ✅ |
 | `issue clone KEY` | ⬜ |
