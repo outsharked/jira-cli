@@ -19,35 +19,50 @@ matching features land.
 ### Implemented
 - `jira init` — interactive config (host, email, API token, default project); verifies auth
 - `jira me` — prints current user's accountId (use with `$(jira me)` in shell)
-- `jira issue list` — Tier 1 filter flags, JQL builder, `--plain` / `--raw` / `--csv` output modes
+- `jira issue list` — full filter flags, JQL builder, `--plain` / `--raw` / `--csv` output modes
+- `jira issue view KEY` — display issue details
+- `jira issue create` — interactive + `--no-input` scripted creation
+- `jira issue edit KEY` — update summary, description, priority, assignee, labels, parent
+- `jira issue assign KEY` — assign or unassign
+- `jira issue move KEY` — transition issue status
+- `jira issue comment add KEY` — add a comment
+- `jira fields sync / list` — manage per-project custom field registry
 
 ### Not yet implemented
-- `jira issue view/create/edit/move/assign/comment add/worklog add/...`
 - `jira epic`, `jira sprint`, `jira project`, `jira board`, `jira release`, `jira open`
 - Interactive TUI (press-key navigation, `v`/`m`/`c` shortcuts)
 - `--history` (requires local history store)
-- Markdown template rendering for `create`/`comment` bodies
 - Shell completion
-- Custom field support (`--custom`)
+- `jira issue clone/delete/link`
 
 ## Quick start
 
 ```sh
-pnpm install
-pnpm dev init                  # runs straight off TS sources via tsx
-pnpm dev me
-pnpm dev issue list --plain
+mise install          # install pnpm at the version in .mise.toml
+pnpm install          # install node_modules
+mise run dev -- init  # configure credentials interactively
+mise run dev -- me
+mise run dev -- issue list --plain
 ```
 
-`pnpm dev` runs `bin/dev.js`, which oclif auto-transpiles with `tsx`. No
-pre-compile step, live edits show up on the next invocation.
+`mise run dev` runs `bin/dev.js` via Node without a compile step — live edits
+show up on the next invocation.
+
+Credentials can also be set via environment variables instead of `init`:
+
+```sh
+export JIRA_HOST=https://company.atlassian.net
+export JIRA_EMAIL=you@example.com
+export JIRA_API_TOKEN=your-token
+export JIRA_DEFAULT_PROJECT=KAN
+```
 
 For a compiled release:
 
 ```sh
-pnpm build                     # tsc → dist/
-node bin/run.js issue list     # runs against dist/
-pnpm pack                      # triggers prepack → generates oclif.manifest.json
+mise run build               # tsc → dist/
+node bin/run.js issue list   # runs against dist/
+pnpm pack                    # triggers prepack → generates oclif.manifest.json
 ```
 
 `oclif.manifest.json` is intentionally only generated at pack time — the

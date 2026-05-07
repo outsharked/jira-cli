@@ -81,6 +81,8 @@ tests/
   integration/  real-API tests; run manually with mise run test:integration
 docs/
   parity.md     feature parity tracker vs ankitpokhrel/jira-cli
+  specs/        design specs (YYYY-MM-DD-<topic>-design.md)
+  plans/        implementation plans (YYYY-MM-DD-<topic>.md)
 ```
 
 ## Testing
